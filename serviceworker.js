@@ -3,11 +3,15 @@ self.addEventListener('install', function(event) {
   //doing this triggers a controllerchange event on the client-side container
   console.log('installing...');
   event.waitUntil(self.skipWaiting());
+  //To skipWaiting() or not to skipWaiting()
+    //skip:
+      //+much quicker for development
+      //-more difficult to manage messaging (the SW you are messaging client-side may go redundant)
 });
 
 self.addEventListener('message', function(e){
     if(e.data == 'port') {
-        e.ports[0].postMessage('v36');
+        e.ports[0].postMessage('v37');
         e.ports[0].onmessage = function handleportmessage(ev){
             e.ports[0].postMessage('port message recvd');
             //if the right things are in there:

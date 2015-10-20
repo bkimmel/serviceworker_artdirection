@@ -46,7 +46,7 @@ navigator.serviceWorker.oncontrollerchange = function(e){
 //Problem: How do you know you are messaging the worker that will be controlling your page?
 //Solution: Message the nav.sw on client claim?
 
-navigator.serviceWorker.register('/serviceworker.js')
+navigator.serviceWorker.register('/lifecyclescience.js')
     .then(function(reg){
         //debugger;
         //code changed SWs will queue up under reg.waiting...
@@ -59,7 +59,7 @@ navigator.serviceWorker.register('/serviceworker.js')
         //It does not matter how many times you "reload the page", the active SW keeps its spot
         //until one of those things happens
         
-        reg.active && reg.active.postMessage('port', [mc.out]);
+        //reg.active && reg.active.postMessage('port', [mc.out]);
         //If 'skipWaiting' is used, the update is still handled asynchronously - so this
         //message will reach the 'old' SW instead of the one that did skipWaiting
 
@@ -74,61 +74,15 @@ navigator.serviceWorker.register('/serviceworker.js')
               //it is now considered an "active worker"
               //however, it is not "controlling" the page yet
                 //science: see if nav.sw.controller != getReg().active
+                  //normally (arguments[0].active === navigator.serviceWorker.controller) == true
+                  //against spec, Chrome classifies it as 'waiting' instead of 'active' (probly better)
             //"activated"
               //it is now controlling the page
-    })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// navigator.serviceWorker.getRegistration()
-//     .then(function(reg){
-//         if(!reg) {
-//             console.log('!reg...');
-//             return navigator.serviceWorker.register('/serviceworker.js');
-//         }
-//         //debugger;
-//         console.log('reg...');
-//         return Promise.resolve(reg);
-// //         return new Promise(function(res, rej){
-// //             reg.update().then(function(){
-// //                 //debugger;
-// //                 console.log('getRegistration...');
-// //                 res(navigator.serviceWorker.getRegistration());
-// //             });
-// //         });
-//     })
-//     .then(function(swreg){
-//         //debugger;
-//         if(swreg.installing){
-//             console.log('swreg.installing');
-//             return new Promise(function(res,rej){
-// //                 navigator.serviceWorker.oncontrollerchange = function(){
-// //                     console.log('controller change fired');
-// //                     res( navigator.serviceWorker.ready );
-// //                 }
-//                 //kick it out of install
-//                 console.log('sending init');
-//                 swreg.installing.postMessage({cmd: 'init', d: mc.port2}, [mc.port2]);
-//                 res(navigator.serviceWorker.ready);
-//             });
-//         }
-//         console.log('swreg.ready');
-//         return navigator.serviceWorker.ready;
-//     })
-//     .then(function(readyreg){
-//         console.log('ready reg');
-//     })
-//     .catch(function(){
-//         console.log('sw registration error');
-//     })
+        //Infuriating: Why can the API not deliver both the SW object and its registration?
+        
+        //confirmed: changed SW code and sw.reg() did not put new code in lifecycle.
+          //even after, did a navigator.serviceWorker.getRegistration().then(function(r){ debugger; }) -- no joy
+          //but then it randomly put it in later...asynchronously for sure?
+          //OK - enough for now.
+        debugger;
+    });
